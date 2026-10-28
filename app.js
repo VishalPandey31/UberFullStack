@@ -7,12 +7,15 @@ const cors=require('cors')
 const connectDB=require('./db/db')
 connectDB();
 const userRoutes=require('./routes/userRoutes')
+const captainRoutes=require('./routes/captainRoutes');
 const app=express();
 
 app.use(cors());
 app.use(cookie());
 app.use(express.json());
 app.use('/api/users', userRoutes);
+app.use('/api/captain', captainRoutes);
+
 
 app.get("/",(req,res)=>{
     res.send("Hello world")
