@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-function HomePage() {
+function Start() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
@@ -88,4 +88,4 @@ function HomePage() {
     );
 }
 
-export default HomePage;
+export default Start;

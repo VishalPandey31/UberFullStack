@@ -1,7 +1,46 @@
 
 import { Link } from 'react-router-dom';
+import {useState} from 'react';
+import {CaptainDataContext} from '../context/captainContext'
+import {useNavigate} from 'react-router-dom'
+import {useContext} from 'react';
+import axios from 'axios';
 
 function CaptainLogin() {
+
+
+    
+ const [email,setEmail]=useState('');
+  const [Password,setPassword]=useState('');
+const [showPassword, setShowPassword] = useState(false);
+
+
+const {  setCaptain } = useContext(CaptainDataContext);
+  const navigate=useNavigate();
+
+ const handleChange=async (e)=>{
+
+        e.preventDefault();
+
+        const userData={
+          email:email,
+          password:Password
+         }
+
+         const response=await axios.post(`${import.meta.env.VITE_BASE_URL}/api/captain/login`,userData);
+
+        if(response.status==200){
+           const data=response.data
+           setCaptain(data.user)
+           localStorage.setItem('token',data.token);
+           navigate('/captain-home');
+        }
+
+         setEmail('');
+         setPassword('');
+        
+}
+
     return (
         <div className="min-h-screen w-full bg-gray-100 flex items-center justify-center p-4">
 
@@ -34,7 +73,7 @@ function CaptainLogin() {
                         Login to your captain account
                     </p>
 
-                    <form className="flex flex-col gap-4">
+                    <form className="flex flex-col gap-4" onSubmit={handleChange}>
 
                         {/* Email */}
                         <div>
@@ -43,24 +82,40 @@ function CaptainLogin() {
                             </label>
 
                             <input
+                            value={email}
+                            onChange={(e)=>{setEmail(e.target.value)}}
                                 type="email"
                                 placeholder="Enter your email"
                                 className="w-full bg-gray-100 px-4 py-3 rounded-xl text-sm outline-none border border-transparent focus:border-[#10B981] focus:bg-white transition"
                             />
                         </div>
 
-                        {/* Password */}
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-800 mb-2">
-                                Password
-                            </label>
+                     {/* Password */}
+<div>
+    <label className="block text-sm font-semibold text-gray-800 mb-2">
+        Password
+    </label>
 
-                            <input
-                                type="password"
-                                placeholder="Enter your password"
-                                className="w-full bg-gray-100 px-4 py-3 rounded-xl text-sm outline-none border border-transparent focus:border-[#10B981] focus:bg-white transition"
-                            />
-                        </div>
+    <div className="relative">
+
+        <input
+            onChange={(e) => setPassword(e.target.value)}
+            type={showPassword ? "text" : "password"}
+            value={Password}
+            placeholder="Enter your password"
+            className="w-full bg-gray-100 px-4 py-3 pr-12 rounded-xl text-sm outline-none border border-transparent focus:border-black focus:bg-white transition"
+        />
+
+        <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+        >
+            {showPassword ? "🙈" : "👁️"}
+        </button>
+
+    </div>
+</div>
 
                         {/* Login Button */}
                         <button
@@ -70,7 +125,7 @@ function CaptainLogin() {
                             Sign in as Captain
                         </button>
 
-                    </form>
+                    </form  >
 
                     {/* Signup Link */}
                     <p className="text-center text-sm text-gray-500 mt-5">

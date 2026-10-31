@@ -1,7 +1,44 @@
 
 import { Link } from 'react-router-dom';
+import {useState,useContext} from 'react';
+import {UserDataContext} from '../context/userContext'
+import {useNavigate} from 'react-router-dom'
+
+import axios from 'axios'
 
 function LoginPage() {
+
+
+  const [email,setEmail]=useState('');
+  const [Password,setPassword]=useState('');
+
+  const {setUser}=useContext(UserDataContext);
+  const navigate=useNavigate();
+
+const [showPassword, setShowPassword] = useState(false);
+
+  const handleChange=async (e)=>{
+
+        e.preventDefault();
+
+        const userData={
+          email:email,
+          password:Password
+         }
+
+         const response=await axios.post(`${import.meta.env.VITE_BASE_URL}/api/users/login`,userData);
+
+        if(response.status==200){
+           const data=response.data
+           setUser(data.user)
+           localStorage.setItem('token',data.token);
+           navigate('/home');
+        }
+
+         setEmail('');
+         setPassword('');
+        
+}
     return (
         <div className="min-h-screen w-full bg-gray-100 flex items-center justify-center p-4">
 
@@ -30,7 +67,7 @@ function LoginPage() {
                         Login to your account
                     </p>
 
-                    <form className="flex flex-col gap-4">
+                    <form className="flex flex-col gap-4"     onSubmit={handleChange}>
 
                         {/* Email */}
                         <div>
@@ -39,29 +76,45 @@ function LoginPage() {
                             </label>
 
                             <input
-                                type="email"
+                                onChange={(e)=>{setEmail(e.target.value)}}
+                                type="email" value={email}
                                 placeholder="Enter your email"
                                 className="w-full bg-gray-100 px-4 py-3 rounded-xl text-sm outline-none border border-transparent focus:border-black focus:bg-white transition"
                             />
                         </div>
 
-                        {/* Password */}
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-800 mb-2">
-                                Password
-                            </label>
+                       
+                      {/* Password */}
+           <div>
+                   <label className="block text-sm font-semibold text-gray-800 mb-2">
+                       Password
+                   </label>
 
-                            <input
-                                type="password"
-                                placeholder="Enter your password"
-                                className="w-full bg-gray-100 px-4 py-3 rounded-xl text-sm outline-none border border-transparent focus:border-black focus:bg-white transition"
-                            />
-                        </div>
+    <div className="relative">
+
+        <input
+            onChange={(e) => setPassword(e.target.value)}
+            type={showPassword ? "text" : "password"}
+            value={Password}
+            placeholder="Enter your password"
+            className="w-full bg-gray-100 px-4 py-3 pr-12 rounded-xl text-sm outline-none border border-transparent focus:border-black focus:bg-white transition"
+        />
+
+        <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+        >
+            {showPassword ? "🙈" : "👁️"}
+        </button>
+
+    </div>
+            </div>
 
                         {/* Login Button */}
-                        <button
+                        <button to="/profile"
                             type="submit"
-                            className="w-full bg-black text-white py-3 rounded-xl font-semibold text-sm mt-2 hover:bg-gray-800 active:scale-[0.98] transition"
+                            className="  w-full bg-black text-white py-3 rounded-xl font-semibold text-sm mt-2 hover:bg-gray-800 active:scale-[0.98] transition"
                         >
                             Login
                         </button>
