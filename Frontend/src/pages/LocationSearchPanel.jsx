@@ -1,5 +1,4 @@
-
-
+import React, { useEffect, useRef } from "react";
 function LocationSearchPanel({ 
     showRidePanel,
     setShowRidePanel,
@@ -17,7 +16,18 @@ function LocationSearchPanel({
         ["Maharashtra", "Mumbai"]
     ];
 
+const hasSearched = useRef(false);
 
+useEffect(() => {
+    if (
+        pickup.trim() &&
+        destination.trim() &&
+        !hasSearched.current
+    ) {
+        hasSearched.current = true;
+        onSearch();
+    }
+}, [pickup, destination]);
 return(
 
 
@@ -150,12 +160,7 @@ return(
 
                 {/* SEARCH BUTTON */}
 
-                <button
-                    onClick={onSearch}
-                    className="w-full h-12 mt-5 rounded-md bg-[#c7c7c7] text-black font-semibold"
-                >
-                    Search destination
-                </button>
+             
 
             </div>
 
