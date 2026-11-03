@@ -3,10 +3,11 @@ import React, { useState } from "react";
 import { MapContainer, TileLayer, Marker, Polyline, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-
+import ConfirmedRide from "../components/ConfirmedRide";
 import LocationSearchPanel from "./LocationSearchPanel";
 import RideOptionsPanel from "../components/RideOptionsPanel";
-
+import FindingDriver from "../components/FindingDriver";
+import WaitingForDriver from "../components/WaitingForDriver";
 // Custom marker icons
 const pickupIcon = new L.DivIcon({
     html: `<div style="background:#22c55e;width:14px;height:14px;border:3px solid white;border-radius:50%;box-shadow:0 0 8px #000"></div>`,
@@ -53,6 +54,27 @@ const Home = () => {
     // Later replace these with API coordinates.
     const [pickupPosition, setPickupPosition] = useState([19.42, 72.82]);
     const [destinationPosition, setDestinationPosition] = useState([19.43, 72.85]);
+const [showConfirmedRide, setShowConfirmedRide] = useState(false);
+const [isConfirmingRide, setIsConfirmingRide] = useState(false);
+const [showFindingDriver, setShowFindingDriver] = useState(false);
+const [showWaitingForDriver, setShowWaitingForDriver] = useState(false);
+
+{showConfirmedRide && (
+    <ConfirmedRide
+        pickup={pickup}
+        destination={destination}
+        selectedRide={selectedRide}
+        onBack={() => setShowConfirmedRide(false)}
+        onBook={() => {
+            alert("Booking request submitted!");
+        }}
+    />
+)}
+
+
+
+
+
 
     const handleSearchDestination = () => {
 
@@ -75,6 +97,24 @@ const Home = () => {
         setShowRideOptions(false);
         setSelectedRide(null);
     };
+
+    const handleConfirmRide = () => {
+    if (!selectedRide) return;
+
+    setShowRideOptions(false);
+    setIsConfirmingRide(true);
+
+    setTimeout(() => {
+        setIsConfirmingRide(false);
+        setShowConfirmedRide(true);
+    }, 1500);
+};
+
+const handleBookIntercity = () => {
+    setShowConfirmedRide(false);
+    setShowFindingDriver(true);
+};
+
 
     return (
         <div className="h-dvh w-full bg-[#151515] text-white overflow-hidden relative">
@@ -158,16 +198,79 @@ const Home = () => {
             {/* RIDE OPTIONS */}
 
             {showRideOptions && (
-                <RideOptionsPanel
-                    pickup={pickup}
-                    destination={destination}
-                    pickupPosition={pickupPosition}
-                    destinationPosition={destinationPosition}
-                    selectedRide={selectedRide}
-                    setSelectedRide={setSelectedRide}
-                    onBack={handleBack}
-                />
+               <RideOptionsPanel
+                        pickup={pickup}
+                        destination={destination}
+                        pickupPosition={pickupPosition}
+                        destinationPosition={destinationPosition}
+                        selectedRide={selectedRide}
+                        setSelectedRide={setSelectedRide}
+                        onBack={() => setShowRideOptions(false)}
+                        onConfirm={handleConfirmRide}
+                    />
             )}
+
+            {isConfirmingRide && (
+    <div className="fixed inset-0 z-[4500] bg-[#151515] flex flex-col items-center justify-center">
+
+        <div className="w-14 h-14 border-4 border-gray-600 border-t-white rounded-full animate-spin"></div>
+
+        <h2 className="text-white text-lg font-semibold mt-6">
+            Confirming your ride
+        </h2>
+
+        <p className="text-gray-400 text-xs mt-2">
+            Preparing your ride details...
+        </p>
+
+    </div>
+)}
+
+           {showConfirmedRide && (
+               <ConfirmedRide
+               pickup={pickup}
+               destination={destination}
+               selectedRide={selectedRide}
+               onBack={() => {
+                   setShowConfirmedRide(false);
+                   setShowRideOptions(true);
+               }}
+               onBook={handleBookIntercity}
+           />
+           )}
+
+           {showFindingDriver && (
+             <FindingDriver
+              pickup={pickup}
+              destination={destination}
+              pickupPosition={pickupPosition}
+              destinationPosition={destinationPosition}
+              selectedRide={selectedRide}
+              onCancel={() => {
+                  setShowFindingDriver(false);
+                  setShowConfirmedRide(true);
+              }}
+              onDriverFound={() => {
+                  setShowFindingDriver(false);
+                  setShowWaitingForDriver(true);
+              }}
+          />
+)}
+
+{showWaitingForDriver && (
+    <WaitingForDriver
+        pickup={pickup}
+        destination={destination}
+        pickupPosition={pickupPosition}
+        destinationPosition={destinationPosition}
+        selectedRide={selectedRide}
+        onCancel={() => {
+            setShowWaitingForDriver(false);
+            setShowConfirmedRide(true);
+        }}
+    />
+)}
+
 
         </div>
     );

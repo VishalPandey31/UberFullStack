@@ -48,7 +48,8 @@ function RideOptionsPanel({
     destinationPosition,
     selectedRide,
     setSelectedRide,
-    onBack
+    onBack,
+    onConfirm
 }) {
 
     const rides = [
@@ -243,23 +244,21 @@ function RideOptionsPanel({
             {/* FIXED BOTTOM BUTTON */}
             <div className="shrink-0 px-3 py-3 bg-[#151515] border-t border-[#292929]">
 
-                <button
+              <button
                     disabled={!selectedRide}
-                    onClick={() => {
-                        alert(`You selected ${selectedRide.name}`);
-                    }}
+                    onClick={onConfirm}
                     className={`w-full h-12 rounded-md font-semibold text-sm
-                        ${
-                            selectedRide
-                                ? "bg-[#c7c7c7] text-black"
-                                : "bg-[#555555] text-gray-300 cursor-not-allowed"
-                        }`}
-                >
+                    ${
+                        selectedRide
+                            ? "bg-[#c7c7c7] text-black"
+                            : "bg-[#555555] text-gray-300 cursor-not-allowed"
+                    }`}
+>                
                     {selectedRide
                         ? `Choose ${selectedRide.name}`
                         : "Select a ride"
                     }
-                </button>
+                 </button>
 
             </div>
 
