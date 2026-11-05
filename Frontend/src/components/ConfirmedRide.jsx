@@ -31,6 +31,9 @@ function ConfirmedRide({
 
             <div className="px-4 pb-28">
 
+              
+
+
                 {/* SAVINGS BANNER */}
                 <div className="bg-[#183c29] text-green-400 rounded-lg py-2 px-3 text-center text-xs mt-4 mb-4">
                     ✓ You're saving ₹{promotion.toFixed(2)} on your ride
@@ -116,6 +119,8 @@ function ConfirmedRide({
 
                     </div>
                 </div>
+
+            
 
                 {/* PRICE BREAKDOWN */}
                 <div className="mt-7 border-t border-[#292929] pt-5">

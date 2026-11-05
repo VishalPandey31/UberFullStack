@@ -12,6 +12,7 @@ import {UserDataContext} from './context/userContext'
 import UserProctectiveWrapper from './pages/UserProctetiveWrapper'
 import CaptiainProctectiveWrapper from './pages/CaptainProctetiveWrapper'
 import {useContext} from 'react';
+import CaptainRiding from './pages/CaptainRiding'
 function App(){
   
 
@@ -30,7 +31,8 @@ return(
                <Route  path="/captain-home" element={<CaptiainProctectiveWrapper><CaptainHome /></CaptiainProctectiveWrapper>}/> 
               <Route path="/logout" element={<UserProctectiveWrapper><Logout/></UserProctectiveWrapper>} />            
               <Route path="/captain-logout" element={<CaptiainProctectiveWrapper><CaptainLogout/></CaptiainProctectiveWrapper>} />            
-             
+                <Route path="/captain-riding"  element={<CaptainRiding/>}/>
+
             </Routes>
   
   </>
