@@ -10,12 +10,14 @@ const userRoutes=require('./routes/userRoutes')
 const captainRoutes=require('./routes/captainRoutes');
 const app=express();
 
+const  mapsRoutes=require('./routes/map.route')
+
 app.use(cors());
 app.use(cookie());
 app.use(express.json());
 app.use('/api/users', userRoutes);
 app.use('/api/captain', captainRoutes);
-
+app.use('/api/maps',mapsRoutes);
 
 app.get("/",(req,res)=>{
     res.send("Hello world")

@@ -201,7 +201,7 @@ function CaptainHome({ socket = null }) {
         >
 
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                        url={`https://api.mapbox.com/styles/v1/mapbox/navigation-night-v1/tiles/256/{z}/{x}/{y}@2x?access_token=${import.meta.env.VITE_MAPBOX_TOKEN }`}
           />
 
           <MapUpdater location={location} />

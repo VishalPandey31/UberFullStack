@@ -62,7 +62,7 @@ function CaptainRiding() {
         >
 
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                        url={`https://api.mapbox.com/styles/v1/mapbox/navigation-night-v1/tiles/256/{z}/{x}/{y}@2x?access_token=${import.meta.env.VITE_MAPBOX_TOKEN }`}
           />
 
           <MapUpdater />
@@ -163,29 +163,6 @@ function CaptainRiding() {
           </div>
 
         </div>
-                   {/* OTP VERIFICATION */}
-                   <div className="bg-[#202020] rounded-lg p-3 mt-3 border border-green-500/50">
-                   
-                     <div className="flex items-center gap-2 mb-1">
-                       <span className="text-sm">🔐</span>
-                       <h3 className="text-sm font-semibold">
-                         Ride Verification OTP
-                       </h3>
-                     </div>
-                   
-                     <p className="text-[10px] text-gray-400 mb-2">
-                       Enter customer's 4-digit OTP
-                     </p>
-                   
-                     <input
-                       type="text"
-                       inputMode="numeric"
-                       maxLength={4}
-                       placeholder="Enter OTP"
-                       className="w-full h-10 bg-[#151515] border border-gray-600 rounded-lg px-3 text-center text-base tracking-[6px] text-white outline-none focus:border-green-500"
-                     />
-                   
-                   </div>
 
         {/* LOCATIONS */}
 

@@ -1,5 +1,4 @@
 
-
 function RidePopup({
   ride,
   onAccept,
@@ -38,8 +37,6 @@ function RidePopup({
   return (
     <div className="fixed inset-0 z-[3000] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-3 sm:p-5">
 
-      {/* POPUP CARD */}
-
       <div className="w-full max-w-md bg-white text-[#171717] rounded-[28px] overflow-hidden shadow-2xl animate-[slideUp_0.35s_ease-out]">
 
         {/* MAP HEADER */}
@@ -76,7 +73,7 @@ function RidePopup({
 
         </div>
 
-        <div className="p-5">
+        <div className="p-5 max-h-[80vh] overflow-y-auto">
 
           {/* TITLE */}
 
@@ -168,8 +165,6 @@ function RidePopup({
 
             </div>
 
-            {/* DIVIDER */}
-
             <div className="border-t border-dashed border-gray-300 ml-4" />
 
             {/* DROP */}
@@ -193,6 +188,34 @@ function RidePopup({
               </div>
 
             </div>
+
+          </div>
+
+          {/* OTP VERIFICATION */}
+
+          <div className="mt-6 bg-[#f5f5f5] rounded-2xl p-4">
+
+            <div className="flex items-center gap-2 mb-2">
+
+              <i className="ri-shield-keyhole-line text-green-600 text-xl"></i>
+
+              <h3 className="font-bold text-sm">
+                Ride Verification OTP
+              </h3>
+
+            </div>
+
+            <p className="text-xs text-gray-500 mb-4">
+              Enter the 4-digit OTP shared by the passenger.
+            </p>
+
+            <input
+              type="text"
+              inputMode="numeric"
+              maxLength={4}
+              placeholder="Enter OTP"
+              className="w-full h-14 bg-white border border-gray-300 rounded-xl text-center text-2xl tracking-[12px] font-bold text-black placeholder:text-sm placeholder:tracking-normal outline-none focus:border-green-500"
+            />
 
           </div>
 
