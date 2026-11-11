@@ -8,6 +8,7 @@ import LocationSearchPanel from "./LocationSearchPanel";
 import RideOptionsPanel from "../components/RideOptionsPanel";
 import FindingDriver from "../components/FindingDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
+import axios from "axios";
 // Custom marker icons
 const pickupIcon = new L.DivIcon({
     html: `<div style="background:#22c55e;width:14px;height:14px;border:3px solid white;border-radius:50%;box-shadow:0 0 8px #000"></div>`,
@@ -42,7 +43,7 @@ function FitBounds({ pickupPosition, destinationPosition }) {
 const Home = () => {
 
     const [destination, setDestination] = useState("");
-    const [pickup, setPickup] = useState("Nagindas");
+    const [pickup, setPickup] = useState("");
 
     const [showRidePanel, setShowRidePanel] = useState(false);
     const [showRideOptions, setShowRideOptions] = useState(false);
@@ -58,6 +59,7 @@ const [showConfirmedRide, setShowConfirmedRide] = useState(false);
 const [isConfirmingRide, setIsConfirmingRide] = useState(false);
 const [showFindingDriver, setShowFindingDriver] = useState(false);
 const [showWaitingForDriver, setShowWaitingForDriver] = useState(false);
+const [fare, setFare] = useState({});
 
 {showConfirmedRide && (
     <ConfirmedRide
@@ -76,8 +78,7 @@ const [showWaitingForDriver, setShowWaitingForDriver] = useState(false);
 
 
 
-    const handleSearchDestination = () => {
-
+const handleSearchDestination = async () => {
     if (!pickup.trim() || !destination.trim()) {
         return;
     }
@@ -86,11 +87,24 @@ const [showWaitingForDriver, setShowWaitingForDriver] = useState(false);
     setSelectedRide(null);
     setIsSearching(true);
 
-    setTimeout(() => {
+    try {
+        const response = await axios.get(
+            `${import.meta.env.VITE_BASE_URL}/api/rides/getFare`,
+            {
+                params: { pickup, destination },
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            }
+        );
+
+        setFare(response.data);
+    } catch (error) {
+        console.error("Error fetching fare:", error);
+    } finally {
         setIsSearching(false);
         setShowRideOptions(true);
-    }, 2000);
-
+    }
 };
 
     const handleBack = () => {
@@ -110,9 +124,33 @@ const [showWaitingForDriver, setShowWaitingForDriver] = useState(false);
     }, 1500);
 };
 
-const handleBookIntercity = () => {
+const handleBookIntercity = async () => {
     setShowConfirmedRide(false);
     setShowFindingDriver(true);
+
+    try {
+        const vehicleMap = {
+            "Auto Rikshaw": "auto",
+            "Go Sedan": "car",
+            "Moto": "motorcycle"
+        };
+
+        await axios.post(
+            `${import.meta.env.VITE_BASE_URL}/api/rides/create`,
+            {
+                pickup,
+                destination,
+                vehicleType: vehicleMap[selectedRide?.name] || "car"
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            }
+        );
+    } catch (error) {
+        console.error("Error creating ride:", error);
+    }
 };
 
 
@@ -199,6 +237,7 @@ const handleBookIntercity = () => {
 
             {showRideOptions && (
                <RideOptionsPanel
+                        fare={fare}
                         pickup={pickup}
                         destination={destination}
                         pickupPosition={pickupPosition}

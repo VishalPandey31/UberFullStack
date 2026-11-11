@@ -42,6 +42,7 @@ function FitBounds({ pickupPosition, destinationPosition }) {
 }
 
 function RideOptionsPanel({
+    fare,
     pickup,
     destination,
     pickupPosition,
@@ -58,7 +59,7 @@ function RideOptionsPanel({
             name: "Auto Rikshaw",
             capacity: 3,
             time: "4 min",
-            price: 219.95,
+            price: fare?.auto ||0,
             img: "https://cdn.pixabay.com/photo/2016/03/31/21/15/rickshaw-1296278_1280.png"
         },
         {
@@ -66,7 +67,7 @@ function RideOptionsPanel({
             name: "Go Sedan",
             capacity: 4,
             time: "6 min",
-            price: 252.07,
+            price:fare?.car || 0,
             img: "https://i.pinimg.com/originals/93/c1/05/93c105244c0a3de81267a89cb13386f7.png"
         },
         {
@@ -74,7 +75,7 @@ function RideOptionsPanel({
             name: "UberXL",
             capacity: 6,
             time: "5 min",
-            price: 476.10,
+            price:fare?.motorcycle || 0,
             img: "https://d1a3f4spazzrp4.cloudfront.net/car-types/haloProductImages/v1.1/UberXL_Black_v2.png"
         },
         {
@@ -82,7 +83,7 @@ function RideOptionsPanel({
             name: "Premier XL",
             capacity: 6,
             time: "5 min",
-            price: 684.83,
+            price: fare?.car ? Math.round(fare.car * 1.5) : 0,
             img: "https://i.pinimg.com/originals/93/c1/05/93c105244c0a3de81267a89cb13386f7.png"
         }
     ];
@@ -139,22 +140,39 @@ function RideOptionsPanel({
                     ←
                 </button>
 
-                {/* LOCATION DETAILS */}
-                <div className="absolute bottom-3 left-3 right-3 z-[1000] bg-[#151515]/90 backdrop-blur-md rounded-xl p-3">
+             {/* LOCATION DETAILS */}
+<div className="absolute bottom-3 left-3 right-3 z-[1000] bg-[#151515]/90 backdrop-blur-md rounded-xl p-3">
 
-                    <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                        <p className="text-xs truncate">{pickup}</p>
-                    </div>
+                       {/* 1. Pickup */}
+                     <div className="flex items-center gap-2">
+                         <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                         <p className="text-xs truncate">{pickup}</p>
+                     </div>
+                 
+                     {/* Dashed line */}
+                     <div className="border-l border-dashed border-gray-500 h-4 ml-[3px]"></div>
+                 
+                     {/* 2. Destination */}
+                     <div className="flex items-center gap-2">
+                         <span className="w-2 h-2 rounded-sm bg-red-500"></span>
+                         <p className="text-xs truncate">{destination}</p>
+                     </div>   {/* 👈 Destination ka div yahan band ho gaya */}
+                 
+                     {/* 3. DISTANCE & DURATION (Yahan alag se neeche aayega) */}
+                     {fare?.distance && (
+                         <div className="flex items-center justify-between pt-2 mt-2 border-t border-[#333333] text-xs">
+                             <span className="font-semibold text-white">
+                                 📍 Distance: <span className="text-green-400 font-bold">{fare.distance.text}</span>
+                             </span>
+                             {fare?.duration && (
+                                 <span className="text-gray-300">
+                                     ⏱️ {fare.duration.text}
+                                 </span>
+                             )}
+                         </div>
+    )}
 
-                    <div className="border-l border-dashed border-gray-500 h-4 ml-[3px]"></div>
-
-                    <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-sm bg-red-500"></span>
-                        <p className="text-xs truncate">{destination}</p>
-                    </div>
-
-                </div>
+</div>
             </div>
 
             {/* RIDE OPTIONS */}

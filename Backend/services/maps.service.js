@@ -13,7 +13,7 @@ const getCoordinates = async (address) => {
         throw new Error('Mapbox API token is missing in .env');
     }
 
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${apiKey}`;
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?country=in&access_token=${apiKey}`;
 
     const response = await fetch(url);
     const data = await response.json();
@@ -95,7 +95,7 @@ const getAutoCompleteSuggestions = async (input) => {
         throw new Error('Mapbox API token is missing in .env');
     }
 
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(input)}.json?access_token=${apiKey}&autocomplete=true`;
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(input)}.json?country=in&proximity=72.8777,19.0760&access_token=${apiKey}`;
 
     const response = await fetch(url );
     const data = await response.json();

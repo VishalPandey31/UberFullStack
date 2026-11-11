@@ -1,7 +1,7 @@
 const mongoose=require('mongoose');
 
 const rideSchema=new mongoose.Schema({
-    use:{
+    user:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User',
         required:true
@@ -42,6 +42,11 @@ const rideSchema=new mongoose.Schema({
     },
     signature:{
         type:String
+    },
+    otp:{
+        type:String,
+        select:false,
+        required:true
     }
 
 })

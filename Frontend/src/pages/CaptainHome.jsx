@@ -1,6 +1,9 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useContext } from 'react';
+import { SocketContext } from '../context/SocketContext';
+import { CaptainDataContext } from '../context/captainContext';
 
 import {
   MapContainer,
@@ -27,7 +30,7 @@ function MapUpdater({ location }) {
   return null;
 }
 
-function CaptainHome({ socket = null }) {
+function CaptainHome() {
 
   const navigate = useNavigate();
 
@@ -38,6 +41,8 @@ function CaptainHome({ socket = null }) {
   const [incomingRide, setIncomingRide] = useState(null);
   const [showRidePopup, setShowRidePopup] = useState(false);
   const [acceptingRide, setAcceptingRide] = useState(false);
+const { socket } = useContext(SocketContext);
+const { captain } = useContext(CaptainDataContext);
 
   const [stats, setStats] = useState({
     earnings: 255.90,
@@ -61,22 +66,28 @@ function CaptainHome({ socket = null }) {
   };
 
   // Listen for incoming rides
-  useEffect(() => {
+ useEffect(() => {
+    if (!socket || !captain?._id) return;
 
-    if (!socket) return;
+    // Server ko batayein ki yeh Captain online hai
+    socket.emit('join', {
+        userType: 'captain',
+        userId: captain._id
+    });
 
-    const handleNewRide = (ride) => {
-      setIncomingRide(ride);
-      setShowRidePopup(true);
+    // Jab bhi nayi ride aaye, popup khol do
+    const handleNewRide = (rideData) => {
+        console.log("New Ride Received:", rideData);
+        setIncomingRide(rideData);
+        setShowRidePopup(true);
     };
 
-    socket.on("new-ride", handleNewRide);
+    socket.on('new-ride', handleNewRide);
 
     return () => {
-      socket.off("new-ride", handleNewRide);
+        socket.off('new-ride', handleNewRide);
     };
-
-  }, [socket]);
+}, [socket, captain]);
 
   // GPS tracking
   useEffect(() => {
