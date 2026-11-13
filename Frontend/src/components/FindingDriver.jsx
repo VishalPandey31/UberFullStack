@@ -33,13 +33,7 @@ function FindingDriver({
     onDriverFound
 }) {
 
-   React.useEffect(() => {
-    const timer = setTimeout(() => {
-        onDriverFound?.();
-    }, 5000);
-
-    return () => clearTimeout(timer);
-}, [onDriverFound]);
+  
 
 
 

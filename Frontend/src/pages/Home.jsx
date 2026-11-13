@@ -9,6 +9,9 @@ import RideOptionsPanel from "../components/RideOptionsPanel";
 import FindingDriver from "../components/FindingDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
 import axios from "axios";
+import { useContext, useEffect } from 'react';
+import { SocketContext } from '../context/SocketContext';
+import { UserDataContext } from '../context/userContext';
 // Custom marker icons
 const pickupIcon = new L.DivIcon({
     html: `<div style="background:#22c55e;width:14px;height:14px;border:3px solid white;border-radius:50%;box-shadow:0 0 8px #000"></div>`,
@@ -23,6 +26,7 @@ const destinationIcon = new L.DivIcon({
     iconSize: [14, 14],
     iconAnchor: [7, 7]
 });
+
 
 // Automatically adjust map to show both locations
 function FitBounds({ pickupPosition, destinationPosition }) {
@@ -60,6 +64,34 @@ const [isConfirmingRide, setIsConfirmingRide] = useState(false);
 const [showFindingDriver, setShowFindingDriver] = useState(false);
 const [showWaitingForDriver, setShowWaitingForDriver] = useState(false);
 const [fare, setFare] = useState({});
+const { socket } = useContext(SocketContext);
+const { user } = useContext(UserDataContext);
+const [ride, setRide] = useState(null); // 👈 Real ride state
+
+// 1. User ko socket room se connect karein
+useEffect(() => {
+    if (!socket || !user?._id) return;
+    socket.emit('join', {
+        userType: 'user',
+        userId: user._id
+    });
+}, [socket, user]);
+
+// 2. Captain dwara ride confirm hone par screen change karein
+useEffect(() => {
+    if (!socket) return;
+
+    socket.on('ride-confirmed', (confirmedRide) => {
+        console.log("Ride confirmed by captain:", confirmedRide);
+        setRide(confirmedRide);
+        setShowFindingDriver(false);
+        setShowWaitingForDriver(true);
+    });
+
+    return () => {
+        socket.off('ride-confirmed');
+    };
+}, [socket]);
 
 {showConfirmedRide && (
     <ConfirmedRide
@@ -298,6 +330,7 @@ const handleBookIntercity = async () => {
 
 {showWaitingForDriver && (
     <WaitingForDriver
+        ride={ride} // 👈 Pass real ride data
         pickup={pickup}
         destination={destination}
         pickupPosition={pickupPosition}

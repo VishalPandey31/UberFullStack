@@ -21,10 +21,9 @@ const CaptiainProctectiveWrapper=({children})=>{
             Authorization:`Bearer ${token}`
         }
     }).then((response)=>{
-         if(response.status===200){
-        setCaptain(response.data.captain);
-      
-         }
+         if (response.status === 200) {
+    setCaptain(response.data); // ✅ Backend seedha captain data bhejta hai
+}
     }).catch((err)=>{
        console.log(err.response?.data)
        localStorage.removeItem('token');

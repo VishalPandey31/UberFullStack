@@ -3,7 +3,7 @@ const router =express.Router();
 const {body,query}=require('express-validator');
 const rideController=require('../controllers/ride.controller');
 const authMiddleware=require('../middleware/userMiddleware');
-
+const captainMiddleware = require('../middleware/captainMiddleware'); 
 
 router.post('/create',authMiddleware.authUser,
    
@@ -19,5 +19,9 @@ router.get('/getFare',authMiddleware.authUser,
      rideController.getFare
 
 )
+router.post('/confirm', captainMiddleware.authCaptain,
+    body('rideId').isMongoId().withMessage('Invalid ride id'),
+    rideController.confirmRide
+);
 
 module.exports = router;
