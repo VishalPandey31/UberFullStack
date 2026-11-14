@@ -191,33 +191,7 @@ function RidePopup({
 
           </div>
 
-          {/* OTP VERIFICATION */}
-
-          <div className="mt-6 bg-[#f5f5f5] rounded-2xl p-4">
-
-            <div className="flex items-center gap-2 mb-2">
-
-              <i className="ri-shield-keyhole-line text-green-600 text-xl"></i>
-
-              <h3 className="font-bold text-sm">
-                Ride Verification OTP
-              </h3>
-
-            </div>
-
-            <p className="text-xs text-gray-500 mb-4">
-              Enter the 4-digit OTP shared by the passenger.
-            </p>
-
-            <input
-              type="text"
-              inputMode="numeric"
-              maxLength={4}
-              placeholder="Enter OTP"
-              className="w-full h-14 bg-white border border-gray-300 rounded-xl text-center text-2xl tracking-[12px] font-bold text-black placeholder:text-sm placeholder:tracking-normal outline-none focus:border-green-500"
-            />
-
-          </div>
+         
 
           {/* FARE DETAILS */}
 

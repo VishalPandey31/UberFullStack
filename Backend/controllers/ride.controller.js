@@ -120,3 +120,49 @@ module.exports.confirmRide = async (req, res) => {
         return res.status(500).json({ message: err.message });
     }
 };
+
+// 4. Start Ride with OTP verification
+module.exports.startRide = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { rideId, otp } = req.body;
+
+    try {
+        const ride = await rideModel.findOne({ _id: rideId })
+            .populate('user')
+            .populate('captain')
+            .select('+otp');
+
+        if (!ride) {
+            return res.status(404).json({ message: 'Ride not found' });
+        }
+
+        if (ride.status !== 'accepted') {
+            return res.status(400).json({ message: 'Ride is not accepted yet' });
+        }
+
+        // ❌ Pehle yeh tha: if (ride.otp !== otp)
+        // ✅ Isse replace karein (100% safe):
+        if (String(ride.otp).trim() !== String(otp).trim()) {
+            return res.status(400).json({ message: 'Invalid OTP! Please check with passenger.' });
+        }
+
+        await rideModel.findOneAndUpdate({ _id: rideId }, { status: 'ongoing' });
+
+        // User ko alert bhejein ki Ride Start ho gayi hai
+        if (ride.user && ride.user.socketId) {
+            sendMessageToSocketId(ride.user.socketId, {
+                event: 'ride-started',
+                data: ride
+            });
+        }
+
+        return res.status(200).json(ride);
+    } catch (err) {
+        console.error("Error starting ride:", err);
+        return res.status(500).json({ message: err.message });
+    }
+};
